@@ -37,7 +37,7 @@ class UserService {
 
     // Aqui você pode gerar e retornar um token de autenticação
 
-    return 'token_de_autenticacao';
+    return 'Autenticado com sucesso';
   }
 }
 

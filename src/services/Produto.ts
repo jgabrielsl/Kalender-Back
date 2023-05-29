@@ -55,7 +55,4 @@ app.delete('/api/produto/:id', (req, res) => {
   }
 });
 
-// Iniciar o servidor
-app.listen(3003, () => {
-  console.log('API está rodando na porta 3003');
-});
+export default app;

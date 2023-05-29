@@ -1,36 +1,32 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import UserService from '../services/UserService';
 
-const prisma = new PrismaClient();
+class UserController {
+  public async createUser(req: Request, res: Response): Promise<Response> {
+    try {
+      const { nome, email, senha } = req.body;
+      const userService = new UserService();
 
-export async function createUser(req: Request, res: Response) {
-  try {
-    const { nome, email, senha } = req.body;
-    const user = await prisma.user.create({
-      data: {
-        nome,
-        email,
-        senha,
-      },
-    });
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao criar usuário' });
-  }
-}
+      const user = await userService.createUser(nome, email, senha);
 
-export async function loginUser(req: Request, res: Response) {
-  try {
-    const { email, senha } = req.body;
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || user.senha !== senha) {
-      res.status(401).json({ error: 'Credenciais inválidas' });
-      return;
+      return res.status(201).json(user);
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro ao criar usuário.' });
     }
-    res.json({ message: 'Login bem-sucedido' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao fazer login' });
+  }
+
+  public async login(req: Request, res: Response): Promise<Response> {
+    try {
+      const { email, senha } = req.body;
+      const userService = new UserService();
+
+      const token = await userService.login(email, senha);
+
+      return res.json({ token });
+    } catch (error) {
+      return res.status(401).json({ error: 'Login inválido.' });
+    }
   }
 }
+
+export default UserController;

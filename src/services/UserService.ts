@@ -1,18 +1,44 @@
-import express from 'express';
-import { createUser, loginUser } from '../controllers/UserController';
+import { PrismaClient, User } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
-const app = express();
+class UserService {
+  private prisma: PrismaClient;
 
-app.use(express.json());
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
 
-// Rotas do usuário
-app.post('/kalender/userinsert', createUser);
-app.post('/kalender/login', loginUser);
+  public async createUser(nome: string, email: string, senha: string): Promise<User> {
+    const hashedPassword = await bcrypt.hash(senha, 10);
 
-// Outras rotas...
+    const user = await this.prisma.user.create({
+      data: {
+        nome,
+        email,
+        senha: hashedPassword,
+      },
+    });
 
-export default app;
+    return user;
+  }
 
-app.listen(3003, () => {
-    console.log('API está rodando na porta 3003');
-});
+  public async login(email: string, senha: string): Promise<string> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      throw new Error('Usuário não encontrado.');
+    }
+
+    const passwordMatch = await bcrypt.compare(senha, user.senha);
+
+    if (!passwordMatch) {
+      throw new Error('Senha incorreta.');
+    }
+
+    // Aqui você pode gerar e retornar um token de autenticação
+
+    return 'token_de_autenticacao';
+  }
+}
+
+export default UserService;

@@ -35,8 +35,6 @@ class UserService {
       throw new Error('Senha incorreta.');
     }
 
-    // Aqui você pode gerar e retornar um token de autenticação
-
     return 'Autenticado com sucesso';
   }
 }

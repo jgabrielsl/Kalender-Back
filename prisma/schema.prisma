@@ -16,3 +16,12 @@ model User {
   email    String   @unique
   senha    String
 }
+
+model Produto {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  preco       Float
+  imagem      String
+  url         String
+}
+

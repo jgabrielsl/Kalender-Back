@@ -22,7 +22,7 @@ class UserController {
 
       const token = await userService.login(email, senha);
 
-      return res.json({ token });
+      return res.status(200);
     } catch (error) {
       return res.status(401).json({ error: 'Login inválido.' });
     }
